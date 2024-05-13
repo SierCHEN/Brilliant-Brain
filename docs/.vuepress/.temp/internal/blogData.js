@@ -1,0 +1,19 @@
+export const blogPostData = JSON.parse("[{\"path\":\"/article/asrvoiah/\",\"title\":\"javascript\",\"categoryList\":[{\"type\":10003,\"name\":\"web\"},{\"type\":10005,\"name\":\"language\"}],\"createTime\":\"2024/05/09 15:58:15\",\"lang\":\"zh-CN\"},{\"path\":\"/article/qzvo1vh7/\",\"title\":\"css\",\"categoryList\":[{\"type\":10003,\"name\":\"web\"},{\"type\":10005,\"name\":\"language\"}],\"createTime\":\"2024/05/09 15:58:15\",\"lang\":\"zh-CN\"},{\"path\":\"/article/w30gz4aj/\",\"title\":\"vue3\",\"categoryList\":[{\"type\":10003,\"name\":\"web\"},{\"type\":10004,\"name\":\"framework\"}],\"createTime\":\"2024/05/09 15:58:15\",\"lang\":\"zh-CN\"},{\"path\":\"/article/c8yuxb36/\",\"title\":\"vue2\",\"categoryList\":[{\"type\":10003,\"name\":\"web\"},{\"type\":10004,\"name\":\"framework\"}],\"createTime\":\"2024/05/09 15:58:15\",\"lang\":\"zh-CN\"},{\"path\":\"/article/bk79hlkj/\",\"title\":\"vite\",\"categoryList\":[{\"type\":10003,\"name\":\"web\"},{\"type\":10004,\"name\":\"framework\"}],\"createTime\":\"2024/05/09 15:58:15\",\"lang\":\"zh-CN\"},{\"path\":\"/article/jigu0a1n/\",\"title\":\"react-native\",\"categoryList\":[{\"type\":10003,\"name\":\"web\"},{\"type\":10004,\"name\":\"framework\"}],\"createTime\":\"2024/05/09 15:58:15\",\"lang\":\"zh-CN\"},{\"path\":\"/article/d8lsarqw/\",\"title\":\"browser-work\",\"categoryList\":[{\"type\":10003,\"name\":\"web\"},{\"type\":10006,\"name\":\"browser\"}],\"createTime\":\"2024/05/09 15:58:15\",\"lang\":\"zh-CN\"},{\"path\":\"/article/d60e9ye8/\",\"title\":\"browser-rendering\",\"categoryList\":[{\"type\":10003,\"name\":\"web\"},{\"type\":10006,\"name\":\"browser\"}],\"createTime\":\"2024/05/09 15:58:15\",\"lang\":\"zh-CN\"},{\"path\":\"/article/g4o0tay4/\",\"title\":\"operating-system\",\"categoryList\":[{\"type\":10001,\"name\":\"theory\"}],\"createTime\":\"2024/05/09 15:58:15\",\"lang\":\"zh-CN\"},{\"path\":\"/article/0v5u1f47/\",\"title\":\"Informatics\",\"categoryList\":[{\"type\":10001,\"name\":\"theory\"}],\"createTime\":\"2024/05/09 15:58:15\",\"lang\":\"zh-CN\"},{\"path\":\"/article/gr307i2v/\",\"title\":\"computer-organization\",\"categoryList\":[{\"type\":10001,\"name\":\"theory\"}],\"createTime\":\"2024/05/09 15:58:15\",\"lang\":\"zh-CN\"},{\"path\":\"/article/phtjybha/\",\"title\":\"computer-network\",\"categoryList\":[{\"type\":10001,\"name\":\"theory\"}],\"createTime\":\"2024/05/09 15:58:15\",\"lang\":\"zh-CN\"},{\"path\":\"/article/24y5uvhz/\",\"title\":\"normalizeConfig\",\"categoryList\":[{\"type\":10002,\"name\":\"project\"}],\"createTime\":\"2024/05/09 15:58:15\",\"lang\":\"zh-CN\"},{\"path\":\"/article/dtvc7r62/\",\"title\":\"Intro\",\"categoryList\":[{\"type\":10000,\"name\":\"guide\"}],\"createTime\":\"2024/05/09 15:58:15\",\"lang\":\"zh-CN\"}]");
+export const extraBlogData = JSON.parse("{\"tagsColorsPreset\":[[\"#6aa1b7\",\"#5086a1\",\"rgba(131, 208, 218, 0.314)\"],[\"#299764\",\"#18794e\",\"rgba(16, 185, 129, 0.14)\"],[\"#946300\",\"#915930\",\"rgba(234, 179, 8, 0.14)\"],[\"#d5393e\",\"#b8272c\",\"rgba(244, 63, 94, 0.14)\"],[\"#7e4cc9\",\"#6f42c1\",\"rgba(159, 122, 234, 0.14)\"],[\"#3a5ccc\",\"#3451b2\",\"rgba(100, 108, 255, 0.14)\"],[\"#fab10f\",\"#f39c12\",\"rgba(255, 213, 0, 0.14)\"],[\"#cc6699\",\"#c75191\",\"rgba(255, 153, 204, 0.14)\"]],\"tagsColors\":{}}");
+
+if (import.meta.webpackHot) {
+  import.meta.webpackHot.accept()
+  if (__VUE_HMR_RUNTIME__.updateBlogData) {
+    __VUE_HMR_RUNTIME__.updateBlogData(blogPostData)
+  }
+  if (__VUE_HMR_RUNTIME__.updateExtraBlogData) {
+    __VUE_HMR_RUNTIME__.updateExtraBlogData(extraBlogData)
+  }
+}
+
+if (import.meta.hot) {
+  import.meta.hot.accept(({ blogPostData, extraBlogData }) => {
+    __VUE_HMR_RUNTIME__.updateBlogData(blogPostData)
+    __VUE_HMR_RUNTIME__.updateExtraBlogData(extraBlogData)
+  })
+}
