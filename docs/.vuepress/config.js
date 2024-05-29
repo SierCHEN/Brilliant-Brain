@@ -29,6 +29,9 @@ export default defineUserConfig({
             items: [
               { text: 'vue2', link: '/web/framework/vue2.md' },
               { text: 'vue3', link: '/web/framework/vue3.md' },
+              { text: 'vuex', link: '/web/framework/vuex.md' },
+              { text: 'pinia', link: '/web/framework/pinia.md' },
+              { text: 'vue-router', link: '/web/framework/vue-router.md' },
               { text: 'vite', link: '/web/framework/vite.md' },
               { text: 'react-native', link: '/web/framework/react-native.md' }
             ],

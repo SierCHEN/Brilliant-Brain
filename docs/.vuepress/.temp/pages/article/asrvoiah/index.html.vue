@@ -34,6 +34,30 @@
 <span class="line"><span style="--shiki-light:#AB5959;--shiki-dark:#CB7676">const</span><span style="--shiki-light:#59873A;--shiki-dark:#80A665"> square</span><span style="--shiki-light:#999999;--shiki-dark:#666666"> =</span><span style="--shiki-light:#AB5959;--shiki-dark:#CB7676"> function</span><span style="--shiki-light:#999999;--shiki-dark:#666666"> (</span><span style="--shiki-light:#B07D48;--shiki-dark:#BD976A">n</span><span style="--shiki-light:#999999;--shiki-dark:#666666">)</span><span style="--shiki-light:#999999;--shiki-dark:#666666"> {</span></span>
 <span class="line"><span style="--shiki-light:#1E754F;--shiki-dark:#4D9375">  return</span><span style="--shiki-light:#B07D48;--shiki-dark:#BD976A"> n</span><span style="--shiki-light:#AB5959;--shiki-dark:#CB7676"> *</span><span style="--shiki-light:#B07D48;--shiki-dark:#BD976A"> n</span><span style="--shiki-light:#999999;--shiki-dark:#666666">;</span></span>
 <span class="line"><span style="--shiki-light:#999999;--shiki-dark:#666666">};</span></span></code></pre>
-<div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div></div></template>
+<div class="line-numbers" aria-hidden="true"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h2 id="proxy" tabindex="-1"><a class="header-anchor" href="#proxy"><span>Proxy</span></a></h2>
+<div class="hint-container caution">
+<p class="hint-container-title">问题</p>
+<p>什么是 <strong>Proxy</strong>？</p>
+<p><strong>MDN</strong> 解释道：“<strong>Proxy 对象</strong> 用于创建一个对象的代理，从而实现基本操作的拦截和自定义（如属性查找、赋值、枚举、函数调用等）。”
+我们都知道，js中一切皆对象。那么什么是对象呢？对象的代理又是什么呢？</p>
+</div>
+<p>根据 <code v-pre>ECMAScript</code> 规范，对象可分为两种对象，<code v-pre>常规对象(ordinary object)</code> 和 <code v-pre>异质对象(exotic object)</code>， <strong>任何不属于常规对象的对象都是异质对象</strong>。规范指出，</p>
+<p>满足以下条件的就是 <strong>常规对象</strong>：内部方法都是由 <code v-pre>table 1</code> 和 <code v-pre>table 2</code> 中规范实现的。</p>
+<ul>
+<li><strong>table1:</strong></li>
+</ul>
+<p><img src="/images/language/js-object-table1.png" alt="Alt text" title="table1: Essential Internal Methods"></p>
+<blockquote>
+<p>举个例子，例如 <strong>Obj.foo</strong>，引擎内部会调用<code v-pre>[[Get]]</code>内部方法读取属性值。</p>
+</blockquote>
+<ul>
+<li><strong>table2:</strong></li>
+</ul>
+<p><img src="/images/language/js-object-table2.png" alt="Alt text" title="table2: Additional Essential Internal Methods of Function Objects"></p>
+<p><strong>一个对象必须部署 <code v-pre>table 1</code> 这 11 个内部方法，一个对象如果被作为函数调用时，就会自动部署 <code v-pre>table 2</code> 这两个方法。</strong></p>
+<p>当我们查阅 <code v-pre>ECMAScript</code> 对 <code v-pre>Proxy</code> 的定义后，我们发现：</p>
+<p>虽然<code v-pre>Proxy</code> 内部实现的方法和<code v-pre>table 1</code> ，<code v-pre>table 2</code>中的方法一样，但是行为确是不同的。引擎内部会调用部署到代理对象中的<code v-pre>[[Get]]</code>内部方法读取属性值，虽然会部署相同的内部方法，但是当创建代理对象的时候没有指定的对应拦截函数，就会调用原始对象的<code v-pre>[[Get]]</code>方法。从<code v-pre>[[Get]]</code>就可以看出，<strong><code v-pre>Proxy</code>是一个异质对象，因为并没有按照 <code v-pre>table 1</code> 中的规范来。</strong></p>
+<p><img src="/images/language/js-object-table-proxy.png" alt="Alt text" title="Proxy Handler Methods"></p>
+</div></template>
 
 

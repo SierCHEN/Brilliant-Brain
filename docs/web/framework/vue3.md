@@ -138,5 +138,107 @@ setTimeout(()=>{
 ```
 
 ### 扩展与完善
+> to be continued
+`分支切换`、`cleanup`、`嵌套effect与effect栈`、`避免无限递归循环`
 
+### 调度执行
+**可调度性是响应式系统非常重要的特性。** 所谓可调度，是指当trigger动作触发副作用函数重新执行时，有能力决定副作用函数执行的时机、次数以及方式。
 
+来看一下设计思路：
+
+1. 为effect函数设计一个选项参数options，允许用户指定调度器，同时在effect函数内部我们需要把options选项挂载到对应的副作用函数上。
+```js
+export function effect(fn, options = {}) {
+  // ...
+  // 将 options 挂载到 effectFn 上
+  effectFn.options = options; // 新增
+  // effectFn.deps 用来存储所有与该副作用函数相关联的依赖集合
+  effectFn.deps = [];
+  // 执行副作用函数
+  effectFn();
+}
+```
+2. 有了调度函数，我们在trigger函数中触发副作用函数重新执行时，就可以直接调用用户传递的调度器函数，从而把控制权交给用户。
+```js
+function trigger(target, key) {
+  const depsMap = bucket.get(target);
+  if (!depsMap) return;
+  const effects = depsMap.get(key);
+
+  const effectsToRun = new Set();
+  effects && effects.forEach(effectFn => {
+    // 如果 trigger 触发执行的副作用函数与当前正在执行的副作用函数相同，则不触发执行
+    if (effectFn !== activeEffect) { 
+      effectsToRun.add(effectFn);
+    }
+  });
+  effectsToRun.forEach(effectFn => {
+    if (effectFn.options.scheduler) {
+      effectFn.options.scheduler(effectFn)
+    } else {
+      effectFn()
+    }
+  });
+}
+```
+
+让我们来看一个具体的例子：**控制副作用函数的执行次数。**
+```js
+const data = { foo: 1 }
+const obj = new Proxy(data, { /* ... */ })
+
+effect(() => {
+  console.log(obj.foo)
+})
+
+obj.foo++
+obj.foo++ 
+```
+在没有指定调度器的情况下，它的输出如下：
+```js
+1
+2
+3
+```
+如果我们不关心它的过渡状态，只关心最终结果，那么中间的打印值是我们所不希望看到的：
+```js
+1 // [!code focus]
+2
+3 // [!code focus]
+```
+```js
+// 定义一个任务队列
+const jobQueue = new Set()
+// 使用 Promise.resolve() 创建一个 promise 实例，我们用它将一个任务添加到微任务队列
+const p = Promise.resolve()
+
+// 一个标志代表是否正在刷新队列
+let isFlushing = false
+function flushJob() {
+  // 如果队列正在刷新，则什么都不做
+  if (isFlushing) return
+  // 设置为 true，代表正在刷新
+  isFlushing = true
+  // 在微任务队列中刷新 jobQueue 队列
+  p.then(() => {
+    jobQueue.forEach(job => job())
+  }).finally(() => {
+    // 结束后重置 isFlushing
+    isFlushing = false
+  })
+}
+
+effect(() => {
+  console.log(obj.foo)
+}, {
+  scheduler(fn) {
+    // 每次调度时，将副作用函数添加到 jobQueue 队列中
+    jobQueue.add(fn)
+    // 调用 flushJob 刷新队列
+    flushJob()
+  }
+})
+
+obj.foo++
+obj.foo++
+```
