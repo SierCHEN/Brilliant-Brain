@@ -76,6 +76,11 @@ export default defineUserConfig({
           { text: '代码规范配置项目', link: '/project/normalizeConfig.md' }
         ]
       }
-    ]
+    ],
+    plugins: {
+      markdownPower: {
+        icons: true,
+      },
+    },
   })
 })

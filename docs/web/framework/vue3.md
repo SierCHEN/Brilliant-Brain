@@ -6,31 +6,7 @@ permalink: /article/w30gz4aj/
 ---
 # VUE3
 
-## Vue.js框架
-**1. __DEV__常量**
-
-`Vue.js`使用`rollup.js`对项目进行构建，这里的__DEV__常量实际上是通过`rollup.js`的插件配置来预定义的，其功能类似于`webpack`中的`DefinePlugin`插件。
-
-当`Vue.js`构建用于开发环境的资源时，会把__DEV__常量设置为`true`，而当`Vue.js`构建用于生产环境的资源时，就会把__DEV__常量设置为`false`，这样这段代码(dead code)就永远不会被执行。它在构建资源时就会被移除。
-```js
-if (__DEV__ && !res) {
-  warn(`Failed to mount app: mount target selector "${container}" returned null.`)
-}
-```
-
-**2. Tree-Shaking**
-
-**Tree-Shaking** 指的就是消除那些永远不会被执行的代码，也就是排除dead code。(`rollup.js`和`webpack`都支持`Tree-Shaking`)
-
-- 模块必须是`ESM(ES Module)`，因为Tree-Shaking依赖ESM的静态结构。
-- 一个函数调用会产生副作用，就无法被Tree-Shaking移除。
-- 使用 `/*# __ PURE __ */`注释
-```js
-export const isHTMLTag = /*# __ PURE __ */ makeMap(HTML_TAGS)
-```
-
-
-## 响应式系统
+## 响应系统
 
 :::tip 思考
 在介绍响应式之前，我们先来思考一个问题，**什么是响应式？为什么需要响应式？**
@@ -246,3 +222,105 @@ effect(() => {
 obj.foo++
 obj.foo++
 ```
+
+## 响应式方案
+
+### Proxy
+:::danger 问题
+什么是 **Proxy**？
+
+**MDN** 解释道：“**Proxy 对象** 用于创建一个对象的代理，从而实现基本操作的拦截和自定义（如属性查找、赋值、枚举、函数调用等）。”
+我们都知道，js中一切皆对象。那么什么是对象呢？对象的代理又是什么呢？
+:::
+
+根据 `ECMAScript` 规范，对象可分为两种对象，`常规对象(ordinary object)` 和 `异质对象(exotic object)`， **任何不属于常规对象的对象都是异质对象**。规范指出，
+
+满足以下条件的就是 **常规对象**：内部方法都是由 `table 1` 和 `table 2` 中规范实现的。
+
+- **table1:**
+
+![Alt text](/images/framework/vue3-object-table1.png "table1: Essential Internal Methods")
+>举个例子，例如 **Obj.foo**，引擎内部会调用`[[Get]]`内部方法读取属性值。
+
+- **table2:**
+
+![Alt text](/images/framework/vue3-object-table2.png "table2: Additional Essential Internal Methods of Function Objects")
+
+**一个对象必须部署 `table 1` 这 11 个内部方法，一个对象如果被作为函数和构造函数调用时，就会自动部署 `table 2` 这两个方法。**
+
+当我们查阅 `ECMAScript` 对 `Proxy` 的定义后，我们发现：
+
+虽然`Proxy` 内部实现的方法和`table 1` ，`table 2`中的方法一样，但是行为确是不同的 **（内部方法的多态性）**。引擎内部会调用部署到代理对象中的`[[Get]]`内部方法读取属性值，虽然会部署相同的内部方法，但是当创建代理对象的时候没有指定的对应拦截函数，就会调用原始对象的`[[Get]]`方法。从`[[Get]]`就可以看出，**`Proxy`是一个异质对象，因为并没有按照 `table 1` 中的规范来。** 
+
+附：Proxy对象部署的所有内部方法
+
+![Alt text](/images/framework/vue3-object-table-proxy.png "Proxy Handler Methods")
+
+### Reflect (ES6新增)
+**Reflect** 是一个内置的对象，它提供拦截 JavaScript 操作的方法。这些方法与 **proxy handler** 的方法相同。**Reflect 不是一个函数对象，因此它是不可构造的**，所以不能通过 `new` 运算符对其进行调用，或者将 Reflect 对象作为一个函数来调用。**Reflect 的所有属性和方法都是静态的**（就像 `Math` 对象）。
+
+>Reflect的出现主要是为了将一些Object对象上的方法转移到Reflect上，使得操作对象更加统一和易于理解。通过这种方式，实现了对Object上方法的封装和统一。
+
+:::danger 问题
+既然 **Reflect** 和 **proxy handler** 的方法操作等价，那么它存在的意义是什么呢？
+:::
+
+因为 **Proxy** 代理的对象，需要用到 **Reflect** 第三个参数`receiver`，用来修改 **getter** **setter** 内部指针。
+
+让我们一起来看一个例子：<Icon name="emojione-v1:chestnut" />
+```js{4}
+const obj = { 
+  foo: 1，
+  get bar() {
+    return this.foo
+  }
+}
+
+const p = new Proxy(obj, {
+  get(target, key) {
+    track(target, key)
+    return target[key]
+  },
+  set(target, key, newVal) {
+    target[key] = newVal
+    trigger(target, key)
+  }
+})
+```
+这是一段最基本的实现响应式数据的代码。在 **get** 和 **set** 拦截函数中，我们都是直接使用 **原始对象target** 来完成对属性的读取和设置操作的。其中原始对象target就是上述代码中的 **obj对象** 。
+
+可以看到，**bar** 属性是一个访问器属性，它返回了 `this.foo` 属性的值。接着，我们在 **effect** 副作用函数中通过 **代理对象p** 访问 **bar属性**。
+```js
+effect(() => {
+  console.log(p.bar)
+})
+```
+当 **effect** 注册的副作用函数执行时，会读取 `p.bar` 属性，它发现 `p.bar` 是一个访问器属性，因此执行 **getter** 函数。由于在 **getter**函数中通过 `this.foo` 读取了 **foo**属性值，因此副作用函数与属性 **foo** 之间也会建立联系。当我们修改 `p.foo` 的值时应该能够触发响应，使得副作用函数重新执行才对。然而实际并非如此，当我们尝试修改 `p.foo` 的值时：
+```js
+p.foo++
+```
+副作用函数并没有重新执行。
+
+实际上，问题就出在 bar 属性的访问器函数 getter 里：在 get 拦截函数内，通过 `target[key]` 返回属性值。其中 target 是原始对象obj，而 key 就是字符串 `'bar'`，**所以 `target[key]` 相当于 `obj.bar`**。因此，当我们使用 `p.bar` 访问 bar 属性时，它的 getter 函数内的 **this** 指向的其实是原始对象 obj，**这说明我们最终访问的其实是 `obj.foo`**。其等价于
+```js
+effect(() => {
+  // obj 是原始数据，不是代理对象，这样的访问不能够建立响应联系
+  obj.foo
+})
+```
+下面我们就来解决一下这个问题 <Icon name="tabler:bulb-filled" color="#ffda1f" size="1.5rem"/>
+```js
+const p = new Proxy(obj, {
+  // 拦截读取操作，接受第三个参数 receiver
+  get(target, key, receiver) {
+    track(target, key)
+    // 使用 Reflect.get 返回读取到的属性值
+    return Reflect.get(target, key, receiver)
+  }
+})
+```
+代理对象的 get 拦截函数接受第三个参数 `receiver`，它代表谁在读取属性。
+```js
+p.bar // 代理对象 p 在读取 bar 属性
+```
+this 由原始对象 obj 变成了代理对象 p。很显然，这会在副作用函数与响应式数据之间建立响应式联系，从而达到依赖收集的效果。如果此时再对 `p.foo` 进行自增操作，会发现已经能够触发副作用函数重新执行了。

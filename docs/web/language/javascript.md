@@ -57,32 +57,3 @@ const square = function (n) {
   return n * n;
 };
 ```
-
-## Proxy
-:::danger 问题
-什么是 **Proxy**？
-
-**MDN** 解释道：“**Proxy 对象** 用于创建一个对象的代理，从而实现基本操作的拦截和自定义（如属性查找、赋值、枚举、函数调用等）。”
-我们都知道，js中一切皆对象。那么什么是对象呢？对象的代理又是什么呢？
-:::
-
-根据 `ECMAScript` 规范，对象可分为两种对象，`常规对象(ordinary object)` 和 `异质对象(exotic object)`， **任何不属于常规对象的对象都是异质对象**。规范指出，
-
-满足以下条件的就是 **常规对象**：内部方法都是由 `table 1` 和 `table 2` 中规范实现的。
-
-- **table1:**
-
-![Alt text](/images/language/js-object-table1.png "table1: Essential Internal Methods")
->举个例子，例如 **Obj.foo**，引擎内部会调用`[[Get]]`内部方法读取属性值。
-
-- **table2:**
-
-![Alt text](/images/language/js-object-table2.png "table2: Additional Essential Internal Methods of Function Objects")
-
-**一个对象必须部署 `table 1` 这 11 个内部方法，一个对象如果被作为函数调用时，就会自动部署 `table 2` 这两个方法。**
-
-当我们查阅 `ECMAScript` 对 `Proxy` 的定义后，我们发现：
-
-虽然`Proxy` 内部实现的方法和`table 1` ，`table 2`中的方法一样，但是行为确是不同的。引擎内部会调用部署到代理对象中的`[[Get]]`内部方法读取属性值，虽然会部署相同的内部方法，但是当创建代理对象的时候没有指定的对应拦截函数，就会调用原始对象的`[[Get]]`方法。从`[[Get]]`就可以看出，**`Proxy`是一个异质对象，因为并没有按照 `table 1` 中的规范来。** 
-
-![Alt text](/images/language/js-object-table-proxy.png "Proxy Handler Methods")
