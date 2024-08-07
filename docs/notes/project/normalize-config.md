@@ -1,13 +1,12 @@
 ---
-title: normalizeConfig
+title: vue3 代码规范最佳实践
 author:
 createTime: 2024/05/09 15:58:15
-permalink: /article/24y5uvhz/
+permalink: /project/normalize-config/
 ---
-# vue3 代码规范最佳实践
 > vite + vue + ts + pinia + vue-router + eslint + stylelint + prettier + husky + lint-staged + commitlint
 
-## 初始化工程
+# 初始化工程
 
 > 针对**vite**的学习，如果你感兴趣，请移步[vite](../web/framework/vite.md)
 
@@ -27,7 +26,7 @@ yarn create vite my-vue-app --template vue
 pnpm create vite my-vue-app --template vue
 ```
 
-### vite@latest
+## vite@latest
 `vite@`后面跟的`latest`是指最新的版本号，当然啦，不跟`latest`还是会帮你安装最新的版本。如果你想要指定版本，可以将`latest`替换成你想要的版本号(命令`npm view create-vite versions`可以帮你查找所有create-vite版本)。
 
 值得注意的是，笔者搭建工程时，`vite`的最新版本是`5.2.1`，但是创建完工程后`package.json`文件中的`vite`依赖版本是`^5.1.4`，这里就不得不提到另一个知识点了，依赖版本号前面的`^`和`~`代表什么？
@@ -41,7 +40,7 @@ pnpm create vite my-vue-app --template vue
 
 所以，即使是`^5.1.4`，我们还是会安装最新的版本。
 
-### vue-ts
+## vue-ts
 `template`后面跟的是模板，比如说`vue`就是**vite + vue**工程，`vue-ts`是**vite + vue + ts**工程。
 
 vite目前支持的模板有：
@@ -70,7 +69,7 @@ vite目前支持的模板有：
 
 ![An image](/images/project/npm-create-vite3.png)
 
-### 报错
+## 报错
 
 **1.找不到模块“vue”**
 > 找不到模块“vue”。你的意思是要将 "moduleResolution" 选项设置为 "node"，还是要将别名添加到 "paths" 选项中?
@@ -106,14 +105,14 @@ declare module '*.vue' {
 
 <br />
 
-## 配置eslint
+# 配置eslint
 
-### 安装eslint
+## 安装eslint
 ```bash
 npm install eslint --save-dev
 ```
 
-### eslint初始化
+## eslint初始化
 ```bash
 npx eslint --init
 ```
@@ -194,7 +193,7 @@ module.exports = {
 ```
 
 
-### 安装vite-plugin-eslint （民间插件， 8.5.1以上没法识别到 eslint配置文件，建议使用官方插件eslint-plugin-vue）
+## 安装vite-plugin-eslint （民间插件， 8.5.1以上没法识别到 eslint配置文件，建议使用官方插件eslint-plugin-vue）
 ```bash
 npm install vite-plugin-eslint --save-dev
 ```
@@ -208,7 +207,7 @@ npm install vite-plugin-eslint --save-dev
 
 这是因为`vite-plugin-eslint`这个库没有提供 TypeScript 的类型声明。当 import 一个没有类型声明的第三方库时，TypeScript 不知道 import 进来的东西是什么类型，只能偷偷地把它指定成 any 类型，这也就是我们常说的**隐式 any（implicit any）**。所有正常的前端项目都会禁止 implicit any 出现，所以就报错了。
 
-### 执行eslint
+## 执行eslint
 在`package.json`文件中的script中添加`eslint`命令
 ```javascript
 {
@@ -224,12 +223,12 @@ npm install vite-plugin-eslint --save-dev
 
 <br />
 
-## 安装prettier
+# 安装prettier
 
 
 <br />
 
-## 配置pinia
+# 配置pinia
 ```bash
 npm install pinia
 # 或者使用 yarn

@@ -2,7 +2,7 @@
 title: vue-router
 author:
 createTime: 2024/05/13 11:23:53
-permalink: /article/frdimb4n/
+permalink: /web/vue-router/vue-router/
 ---
 # Vue Router 
 :::tip

@@ -1,17 +1,17 @@
 ---
 title: 计算机组成原理
-author:
+author: 阿c
 createTime: 2024/05/09 15:58:15
-permalink: /article/gr307i2v/
+permalink: /theory/computer-organization/
 ---
 
-## 前言
+# 前言
 
 ![An image](/images/theory/c-o-knowledgeMap.jpg)
 
 
 
-## 冯·诺伊曼体系结构(Von Neumann architecture)
+# 冯·诺伊曼体系结构(Von Neumann architecture)
 
 即 **存储程序计算机**（“可编程” + “可存储”），抽象为从输入设备读取输入信息，通过运算器和控制器来执行存储在存储器里的程序，最终把结果输出到输出设备中。
 
@@ -33,7 +33,7 @@ permalink: /article/gr307i2v/
 
 
 
-## 计算机性能
+# 计算机性能
 
 :::tip 维基百科
 计算机性能，一般会以电脑系统在指定时间和使用资源的条件下，所完成工作的数量来表示。
@@ -41,7 +41,7 @@ permalink: /article/gr307i2v/
 
 一般来说，我们会用 **响应时间（Response time）** 和 **吞吐率（Throughput）** 来衡量一个计算机的性能。
 
-### 响应时间
+## 响应时间
 
 在计算机里，我们有一个计时单位，俗称 **"时钟"**。
 :::tip 时钟

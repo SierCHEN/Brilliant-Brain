@@ -2,7 +2,7 @@
 title: git
 author:
 createTime: 2024/05/29 16:37:51
-permalink: /article/7yn7io1m/
+permalink: /web/git/
 ---
 
 ## 分布式版本管理系统

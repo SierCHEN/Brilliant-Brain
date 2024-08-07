@@ -1,12 +1,11 @@
 ---
-title: computer-network
-author:
+title: 计算机网络
+author: 阿c
 createTime: 2024/05/09 15:58:15
-permalink: /article/phtjybha/
+permalink: /theory/computer-network/
 ---
-# 计算机网络
 
-## 前言
+# 前言
 
 > 在学习计算机网络之前，我们先来理解两个概念，网络是什么？互联网又是什么？
 

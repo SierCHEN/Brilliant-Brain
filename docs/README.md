@@ -13,7 +13,7 @@ config:
         -
           theme: brand
           text: 快速开始 →
-          link: /guide/intro.md
+          link: /notes/guide/intro.md
         -
           theme: alt
           text: Github
